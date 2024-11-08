@@ -32,7 +32,7 @@ Preparing the hub cluster for provisioning clusters through the O-Cloud Manager 
 
 Distinctions:
 * The `Application` CRs should point to the [clustertemplates](./clustertemplates/) and respectively the [policytemplates](./policytemplates/) directories.
-* The following should be added to the [AppProject](https://github.com/openshift-kni/cnf-features-deploy/blob/master/ztp/gitops-subscriptions/argocd/deployment/app-project.yaml) for `clustertemplates`, under `spec.clusterResourceWhitelist`:
+* The following should be added to the [AppProject](https://github.com/openshift-kni/cnf-features-deploy/blob/master/ztp/gitops-subscriptions/argocd/deployment/app-project.yaml) for `clustertemplates`, under `spec.namespaceResourceWhitelist`:
 ```yaml
   - group: o2ims.provisioning.oran.org
     kind: ClusterTemplate
