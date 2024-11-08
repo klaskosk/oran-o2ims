@@ -15,7 +15,7 @@ WORKDIR /workspace
 COPY vendor/ vendor/
 
 # Copy the go modules manifests
-COPY go.* .
+COPY go.* ./
 
 # Copy the required source directories
 COPY main.go .
