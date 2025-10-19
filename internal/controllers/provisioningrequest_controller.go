@@ -979,17 +979,23 @@ func (t *provisioningRequestReconcilerTask) canSkipClusterInstanceRendering(ctx 
 
 	// Condition 1: ClusterInstance was successfully rendered
 	if ciRenderedCond == nil || ciRenderedCond.Status != metav1.ConditionTrue {
+		t.logger.InfoContext(ctx, "Cannot skip ClusterInstance Rendering; has not been rendered yet", slog.String("name", t.object.Name))
+
 		return nil, false
 	}
 
 	// Condition 2: ClusterInstance has been applied
 	if t.object.Status.Extensions.ClusterDetails == nil {
+		t.logger.InfoContext(ctx, "Cannot skip ClusterInstance Rendering; has not been applied yet", slog.String("name", t.object.Name))
+
 		return nil, false
 	}
 
 	// Condition 3: Cluster is not yet completed (provisioning is in progress)
 	// Allow re-rendering after completion to support upgrade scenarios
 	if ctlrutils.IsClusterProvisionCompleted(t.object) {
+		t.logger.InfoContext(ctx, "Cannot skip ClusterInstance Rendering; cluster provisioning completed", slog.String("name", t.object.Name))
+
 		return nil, false
 	}
 
@@ -997,9 +1003,13 @@ func (t *provisioningRequestReconcilerTask) canSkipClusterInstanceRendering(ctx 
 	// This handles edge cases where ClusterDetails is set but the ClusterInstance was deleted / not found
 	existingCI, err := t.getExistingClusterInstance(ctx)
 	if err != nil {
+		t.logger.InfoContext(ctx, "Cannot skip ClusterInstance Rendering; ClusterInstance does not exist", slog.String("name", t.object.Name))
+
 		// ClusterInstance doesn't exist - need to render it
 		return nil, false
 	}
+
+	t.logger.InfoContext(ctx, "Skipping ClusterInstance rendering", slog.String("name", t.object.Name))
 
 	// Prepare the existing ClusterInstance for Server-Side Apply by clearing metadata
 	// that must not be present in SSA requests

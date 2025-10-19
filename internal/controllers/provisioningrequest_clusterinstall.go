@@ -107,6 +107,9 @@ func (t *provisioningRequestReconcilerTask) buildClusterInstance(
 	isDryRun := true
 	err = t.applyClusterInstance(ctx, renderedCIUnstructured, isDryRun)
 	if err != nil {
+		marshaledRenderedCI, _ := renderedCIUnstructured.MarshalJSON()
+		t.logger.ErrorContext(ctx, "failed to validate the rendered ClusterInstance with dry-run @klaskosk", slog.String("name", t.object.Name), slog.String("renderedCI", string(marshaledRenderedCI)))
+
 		return nil, fmt.Errorf("failed to validate the rendered ClusterInstance with dry-run: %w", err)
 	}
 
